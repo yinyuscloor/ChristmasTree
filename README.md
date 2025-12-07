@@ -1,4 +1,4 @@
-# 🎄 Christmas Tree Project
+# 🎄 Christmas Tree
 
 一个简单的圣诞树HTML页面，包含自动播放的圣诞视频。
 
