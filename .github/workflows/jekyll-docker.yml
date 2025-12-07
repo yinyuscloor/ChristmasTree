@@ -1,0 +1,21 @@
+name: Preview
+on: pull_request
+jobs:
+  serve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Serve via ngrok
+        run: |
+          # 装个最小 HTTP 服务器
+          python3 -m http.server 8080 &
+          # 把 8080 映射到公网
+          curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.zip -o ngrok.zip
+          unzip ngrok.zip
+          ./ngrok authtoken ${{ secrets.NGROK_TOKEN }}
+          ./ngrok http 8080 --log=stdout | tee ngrok.log &
+          sleep 5
+          PUBLIC_URL=$(grep -o 'https://[0-9a-z]*\.ngrok\.io' ngrok.log | head -1)
+          echo "🌍 Live preview: $PUBLIC_URL"
+          # 让 job 持续 5 分钟
+          sleep 1000
